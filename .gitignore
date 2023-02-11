@@ -1,0 +1,5 @@
+# get from the official repo.
+src/raygui.h
+
+obj/
+bin/
