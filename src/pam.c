@@ -1,9 +1,3 @@
-#include <security/pam_appl.h>
-#include <security/pam_misc.h>
-
-#include <pwd.h>
-#include <paths.h>
-
 #include "pam.h"
 
 #define PATH_ENV_VAR "/usr/local/sbin:/usr/local/bin:/usr/bin"
@@ -16,6 +10,7 @@ void err(char* fmt, int result){
     fprintf(stderr, "%s: %s\n", fmt,
       pam_strerror(pam_handle, result));
     end(result);
+    exit(2);
   } while(1);
 }
 
@@ -67,7 +62,7 @@ bool login(char* username, char* password, pid_t* child_pid){
   return true;
 }
 
-static int conv(int num_msg, const struct pam_message **msg,
+int conv(int num_msg, const struct pam_message **msg,
                 struct pam_response** resp, void *appdata_ptr) {
   *resp = calloc(num_msg, sizeof(struct pam_response));
   if (*resp == NULL) return PAM_BUF_ERR;

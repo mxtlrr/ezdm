@@ -1,6 +1,11 @@
 #pragma once
 
 #include <stdbool.h>
+#include <security/pam_appl.h>
+#include <security/pam_misc.h>
+
+#include <pwd.h>
+#include <paths.h>
 
 bool login(char* username, char* password, pid_t* child_pid);
 bool logout(void);

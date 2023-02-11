@@ -3,14 +3,39 @@
 #include "raylib.h"
 #include <stdio.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#include "pam.h"
 void _(){ return; }
+
+void* ezdm__login(char* user, char* pass){
+  pid_t child_pid;
+  if(login(user, pass, child_pid)){
+    if(IsWindowHidden() != true) SetWindowState(FLAG_WINDOW_HIDDEN);
+    
+    int status;
+    waitpid(child_pid, &status, 0);
+    // Re-show window
+    SetWindowState(FLAG_WINDOW_MAXIMIZED); // hopefully works?
+    logout(); // logout
+  } else {
+    // do not do anything.
+    // if nothing happens, they'll (they=user) think something
+    // went wrong, and thus,
+    // will re-enter their stuff
+  }
+  return NULL;
+}
 
 int main(){
   SetTraceLogCallback(_);
   InitWindow(GetScreenWidth(), GetScreenHeight(), "Easy Display Manager");
 
-  char username_text[256], password_text[256] = "";
-  bool username_editmode, password_editmode = false;
+  char username_text[3] = "";
+  char password_text[5] = "";
+  bool username_editmode = false;
+  bool password_editmode = false;
 
 
   while(!WindowShouldClose()){
@@ -36,6 +61,7 @@ int main(){
       Rectangle button_bounds = { 390, 350, 105, 40};
       if(GuiButton(button_bounds, "Login") == true){
         printf("got username as: %s and password: %s\n", username_text, password_text);
+        ezdm__login(username_text, password_text);
       }
       
 
